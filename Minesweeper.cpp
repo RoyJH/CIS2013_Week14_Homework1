@@ -1,12 +1,10 @@
 #include <iostream>
 #include <cstring>
 using namespace std;
-// int rows;
-// int cols
-char numbers[49][49];
 int rows;
 int cols;
 int bombs;
+bool playing = true;
 class game{
 	public:
 		string get_name(){
@@ -31,7 +29,7 @@ class minesweeper: public game{
 	private:
 		//int board_rows;
 	//	int board_cols;
-		int board_mines;
+		int b_bombs;
 	public:
 			int b_rows;
 			int b_cols;
@@ -70,10 +68,26 @@ class minesweeper: public game{
 			}
 
 		}
-		int get_square(){
+		void get_square(){
 			cout << "Enter a plot to check." << endl;
 			cin >> x_plot >> y_plot;
-			return x_plot, y_plot;
+			
+		}
+		void check_square(){
+			if ((board [x_plot][y_plot]) == 2){
+					cout << "Too bad, you hit a bomb." << endl;
+			cout << "GAME OVER" << endl;
+			playing = false;
+			}
+			else if ((board [x_plot][y_plot]) == 1){
+					cout << "You've already checked that plot" << endl;
+					cout << "Try again." << endl;
+				get_square();
+			}
+			else if ((board [x_plot][y_plot]) == 0){
+					board [x_plot][y_plot] = 1;
+					print_board();
+			}
 		}
 		void check_plots(){
 			
@@ -81,7 +95,7 @@ class minesweeper: public game{
 		void get_stats(){
 		b_rows = rows;
 		b_cols = cols;
-		board_mines = bombs;
+		b_bombs = bombs;
 		}
 		minesweeper(){
 			get_stats();
@@ -90,12 +104,18 @@ class minesweeper: public game{
 		}
 		play_move(){
 			get_square();
+			check_square();
 		}
 		void populate(){
-			for (int i=0; i<=bombs;i++){
-			int x= rand() % rows + 1;
-			int y= rand() % cols+1;
-			board[x][y] = 2;
+			for (int i=0; i<=b_bombs;i++){
+				int x= rand() % b_rows + 1;
+				int y= rand() % b_cols+1;
+				
+				for(int d =0; d < b_rows; d++)
+						for (int c = 0; c < b_rows; c++)
+							if ((x==d)&&(y==c))
+							{board [c][d] = 2;}
+							else board [c][d] = 0;
 		}
 	}
 };
@@ -107,8 +127,13 @@ int main (){
 	cout<< "How many mines should there be?" << endl;
 	cin>> bombs;
 	
-	minesweeper ();
-	minesweeper populate();
-		minesweeper ();
+	minesweeper fun;
+	cout << "fun" << endl;
+	fun.populate();
+	cout<< "pop" << endl;
+		fun.print_board ();
+		cout << "last" << endl;
+		while (playing){
+		fun.play_move();}
 return 0;
 }
